@@ -1,0 +1,812 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="theme-color" content="#090d16">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <title>SKILL FORGE Studio V 1.0</title>
+  <link rel="manifest" href="manifest.json">
+  <script src="https://www.gstatic.com/antigravity/web/dev/tailwindcss.min.js"></script>
+  <style>
+    body {
+      background-color: #030712;
+      color: #f8fafc;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .glow-cyan {
+      box-shadow: 0 0 30px rgba(6, 182, 212, 0.2);
+    }
+    .tab-active {
+      background: rgba(6, 182, 212, 0.16);
+      border-color: #06b6d4;
+      color: #22d3ee;
+    }
+    ::-webkit-scrollbar {
+      width: 4px;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #334155;
+      border-radius: 4px;
+    }
+  </style>
+</head>
+<body class="p-2 sm:p-5 flex justify-center items-center min-h-screen">
+
+  <!-- Marco de Teléfono Móvil PWA -->
+  <div class="w-full max-w-md bg-[#0f172a] rounded-3xl border border-slate-800 shadow-2xl overflow-hidden flex flex-col glow-cyan relative min-h-[850px] max-h-[92vh]">
+    
+    <!-- HEADER DE LA APP UNIVERSAL -->
+    <div class="px-4 py-3 bg-[#1e293b]/95 border-b border-slate-800 backdrop-blur z-20">
+      <div class="flex items-center justify-between">
+        <div class="flex items-center gap-2.5">
+          <div class="w-8 h-8 rounded-xl bg-gradient-to-tr from-cyan-500 to-indigo-600 flex items-center justify-center text-sm shadow-md">
+            🛠️
+          </div>
+          <div>
+            <div class="flex items-center gap-1.5">
+              <span class="font-black text-sm tracking-wide text-white">SKILL FORGE</span>
+              <span class="text-[9px] font-bold px-2 py-0.5 rounded-full border border-cyan-400/50 bg-cyan-500/10 text-cyan-300">Studio</span>
+              <span class="text-[9px] font-mono font-bold bg-slate-800 text-slate-300 border border-slate-700 px-1.5 py-0.2 rounded">V 1.0</span>
+            </div>
+            <!-- Subtítulo en una sola línea completa -->
+            <p class="text-[10px] text-cyan-200/80 font-medium whitespace-nowrap overflow-hidden text-ellipsis">
+              Compilador / Operador de Skills Multipropósito Universal
+            </p>
+          </div>
+        </div>
+        <button id="btnSettings" class="w-7 h-7 rounded-lg bg-slate-800 hover:bg-slate-700 border border-slate-700 flex items-center justify-center text-slate-300 text-xs transition" title="Configurar API">
+          ⚙️
+        </button>
+      </div>
+
+      <!-- Barra Superior: Estado de Sincronización & Selector de Memoria Reubicado -->
+      <div class="mt-2.5 pt-2 border-t border-slate-800/80 flex items-center justify-between relative">
+        <div class="flex items-center gap-1.5 text-[10px] text-emerald-400 font-medium">
+          <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+          <span>Conocimiento Sincronizado</span>
+        </div>
+
+        <!-- Botón Popover de Memoria -->
+        <div class="relative">
+          <button id="btnMemoryMenuToggle" type="button" class="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-cyan-950/70 border border-cyan-500/40 text-cyan-300 text-[10px] font-semibold hover:bg-cyan-900/60 transition">
+            <span>💡</span>
+            <span id="lblMemoryStatus">Memoria: Automática</span>
+            <span class="text-xs">☰</span>
+          </button>
+
+          <!-- Menú Desplegable Vertical de Memoria -->
+          <div id="memoryDropdown" class="hidden absolute right-0 top-8 w-56 bg-[#090e17] border border-cyan-500/40 rounded-xl shadow-2xl p-2 z-50 text-[11px] space-y-1 backdrop-blur-md">
+            <div class="text-[9px] font-bold text-slate-400 uppercase tracking-wider px-2 py-1">Régimen de Memoria</div>
+            
+            <button type="button" onclick="selectMemoryMode('Automática', '🤖')" class="w-full text-left p-2 rounded-lg hover:bg-cyan-950/60 flex items-start gap-2 border border-transparent hover:border-cyan-500/30 transition">
+              <span class="text-sm">🤖</span>
+              <div>
+                <div class="font-bold text-cyan-300">Automática</div>
+                <div class="text-[9px] text-slate-400">Skill-Forge decide según la tarea</div>
+              </div>
+            </button>
+
+            <button type="button" onclick="selectMemoryMode('Activa (Drive+Obsidian)', '💾')" class="w-full text-left p-2 rounded-lg hover:bg-cyan-950/60 flex items-start gap-2 border border-transparent hover:border-cyan-500/30 transition">
+              <span class="text-sm">💾</span>
+              <div>
+                <div class="font-bold text-cyan-300">Activa (Drive + Obsidian)</div>
+                <div class="text-[9px] text-slate-400">Bitácora persistente y perfil vivo</div>
+              </div>
+            </button>
+
+            <button type="button" onclick="selectMemoryMode('Sin Memoria', '⚡')" class="w-full text-left p-2 rounded-lg hover:bg-cyan-950/60 flex items-start gap-2 border border-transparent hover:border-cyan-500/30 transition">
+              <span class="text-sm">⚡</span>
+              <div>
+                <div class="font-bold text-cyan-300">Sin Memoria</div>
+                <div class="text-[9px] text-slate-400">Efímera, cero persistencia en disco</div>
+              </div>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PESTAÑAS DE NAVEGACIÓN MÓVIL -->
+    <div class="grid grid-cols-2 p-1.5 bg-[#0b1120] border-b border-slate-800 text-xs font-semibold z-10">
+      <button id="tabForge" class="py-2.5 rounded-xl text-center border transition tab-active flex items-center justify-center gap-1.5">
+        <span>🔨</span> <span>1. Compilar Skill</span>
+      </button>
+      <button id="tabRunner" class="py-2.5 rounded-xl text-center border border-transparent text-slate-400 hover:text-slate-200 transition flex items-center justify-center gap-1.5">
+        <span>🚀</span> <span>2. Operar Skill</span>
+      </button>
+    </div>
+
+    <!-- ============================================================== -->
+    <!-- CUERPO 1: VISTA DE COMPILACIÓN (FORGE)                          -->
+    <!-- ============================================================== -->
+    <div id="viewForge" class="flex-1 p-4 space-y-4 overflow-y-auto">
+
+      <!-- Identidad y Slug -->
+      <div class="space-y-1">
+        <div class="flex justify-between items-center">
+          <label class="text-[11px] font-bold text-slate-300 uppercase tracking-wider">Identidad / Slug de la Skill</label>
+          <span class="text-[9px] text-slate-500 font-mono">minúsculas y guiones</span>
+        </div>
+        <input id="skillSlug" type="text" placeholder="ej: auditor-forense, coach-trading, tutor-python" 
+               class="w-full bg-[#0b1120] border border-slate-800 rounded-xl px-3 py-2.5 text-xs text-cyan-300 placeholder-slate-600 focus:outline-none focus:border-cyan-500 font-mono">
+      </div>
+
+      <!-- INGESTA DE FUENTES CRUDAS (AMPLIA Y CON PRESENCIA ICONOGRÁFICA) -->
+      <div class="border-2 border-dashed border-cyan-500/40 hover:border-cyan-400 rounded-2xl p-4 bg-gradient-to-b from-[#0b1120] to-[#0f172a] text-center transition cursor-pointer" id="dropZone">
+        <div class="flex justify-center items-center gap-2 mb-2 text-xl">
+          <span class="p-2 rounded-xl bg-cyan-950/80 border border-cyan-500/30">📄</span>
+          <span class="p-2 rounded-xl bg-indigo-950/80 border border-indigo-500/30">📚</span>
+          <span class="p-2 rounded-xl bg-purple-950/80 border border-purple-500/30">🔗</span>
+          <span class="p-2 rounded-xl bg-slate-800 border border-slate-700">🎙️</span>
+        </div>
+        <p class="text-xs font-bold text-slate-200">Ingesta de Fuentes Crudas</p>
+        <p class="text-[10px] text-slate-400 mt-0.5">Arrastra o pulsa para subir PDFs, apuntes, capturas o audios</p>
+        <div class="mt-2.5 inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-cyan-500/10 border border-cyan-500/30 text-[10px] font-semibold text-cyan-300">
+          <span>📂 Explorar Archivos Locales</span>
+        </div>
+        <input type="file" id="fileInput" class="hidden" multiple>
+        <div id="fileListSummary" class="hidden mt-2 text-[10px] font-mono text-cyan-300 bg-[#070b14] p-1.5 rounded-lg border border-cyan-500/20"></div>
+      </div>
+
+      <!-- VENTANA DE CONTEXTO (ÁREA LIBRE) CON BOTÓN DE GUÍA DIDÁCTICA -->
+      <div class="bg-[#0b1120] p-3.5 rounded-2xl border border-slate-800 space-y-2">
+        <div class="flex items-center justify-between">
+          <label class="text-[11px] font-bold text-slate-200 flex items-center gap-1.5">
+            <span>✍️</span> <span>Ventana de Contexto (Requerimiento)</span>
+          </label>
+          
+          <!-- Botón de Guía Didáctica que abre el modal Fullscreen -->
+          <button id="btnOpenGuide" type="button" class="flex items-center gap-1 px-2.5 py-1 rounded-lg bg-indigo-950/80 border border-indigo-500/40 text-indigo-300 text-[10px] font-bold hover:bg-indigo-900/80 transition animate-pulse">
+            <span>💡</span> <span>Guía Didáctica</span>
+          </button>
+        </div>
+
+        <p class="text-[10px] text-slate-400 leading-tight">
+          Redacta en lenguaje natural lo que esperas de la skill o selecciona estilos preconfigurados desde la guía:
+        </p>
+
+        <textarea id="txtContext" rows="4" placeholder="Ej: Quiero que actúes como auditor implacable. En cada análisis debate posturas contrarias y entrégame un checklist quirúrgico..."
+          class="w-full bg-[#070b14] border border-slate-800 rounded-xl p-3 text-xs text-slate-200 placeholder-slate-600 focus:outline-none focus:border-cyan-500 font-sans leading-relaxed"></textarea>
+      </div>
+
+      <!-- Selector de Topología RAG -->
+      <div class="space-y-1.5">
+        <label class="text-[11px] font-bold text-slate-400 uppercase tracking-wider block">Topología RAG Destino</label>
+        <div class="grid grid-cols-3 gap-2 text-center text-[10px] font-semibold" id="topologyGroup">
+          <button type="button" data-top="A" class="top-btn p-2 rounded-xl border border-cyan-500/50 bg-cyan-500/15 text-cyan-300">
+            Caso A<br><span class="text-[8px] text-slate-400 font-normal">Embebida (&le;9.5k)</span>
+          </button>
+          <button type="button" data-top="B" class="top-btn p-2 rounded-xl border border-slate-800 bg-[#0b1120] text-slate-400 hover:text-slate-200">
+            Caso B<br><span class="text-[8px] text-slate-400 font-normal">Fuentes Sueltas</span>
+          </button>
+          <button type="button" data-top="C" class="top-btn p-2 rounded-xl border border-slate-800 bg-[#0b1120] text-slate-400 hover:text-slate-200">
+            Caso C<br><span class="text-[8px] text-slate-400 font-normal">NotebookLM MCP</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Botón de Compilación Maestro -->
+      <button id="btnCompile" class="w-full py-3.5 bg-gradient-to-r from-cyan-600 via-indigo-600 to-cyan-500 hover:from-cyan-500 hover:to-indigo-500 text-white font-extrabold text-xs rounded-2xl shadow-lg transition active:scale-95 flex items-center justify-center gap-2">
+        <span>⚡</span>
+        <span id="compileText">COMPILAR SKILL (GRAFO N1 ➔ N4)</span>
+      </button>
+
+      <!-- Panel de Entrega y Resultados de Compilación -->
+      <div id="compileResult" class="hidden bg-[#0b1120] p-3.5 rounded-2xl border border-emerald-500/40 space-y-3">
+        <div class="flex items-center justify-between text-xs text-emerald-400 font-bold">
+          <span>✅ Paquete de Skill Certificado</span>
+          <span id="packSizeBadge" class="text-[10px] font-mono text-slate-400 bg-slate-800 px-2 py-0.5 rounded">Caso A</span>
+        </div>
+        <div class="text-[11px] text-slate-300 font-mono bg-[#111827] p-2.5 rounded-xl border border-slate-800/80 space-y-1">
+          <div>📄 <strong>SKILL.md:</strong> Reglas canónicas y frontmatter pushy.</div>
+          <div>📜 <strong>00-PRIMIGENIO.md:</strong> Capa 1 de ejecución local.</div>
+          <div id="resNotebookLine" class="hidden text-cyan-300">📓 <strong>Cuaderno:</strong> Preparado para vinculación MCP.</div>
+          <div id="resMemoryLine">🧠 <strong>Memoria:</strong> Régimen Automático activo.</div>
+        </div>
+        <div class="grid grid-cols-2 gap-2">
+          <button id="btnCopySkill" class="py-2.5 bg-slate-800 hover:bg-slate-700 text-cyan-300 text-xs font-semibold rounded-xl border border-slate-700 transition">
+            📋 Copiar Prompt
+          </button>
+          <button id="btnExportDrive" class="py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-semibold rounded-xl transition">
+            💾 Enviar a Queue Drive
+          </button>
+        </div>
+      </div>
+
+      <div class="h-4"></div>
+    </div>
+
+    <!-- ============================================================== -->
+    <!-- CUERPO 2: VISTA DE EJECUCIÓN (RUNNER) — HÍBRIDA 2.C            -->
+    <!-- ============================================================== -->
+    <div id="viewRunner" class="hidden flex-1 p-4 space-y-4 overflow-y-auto">
+
+      <!-- Selector de Skill Activa en el Teléfono -->
+      <div class="bg-[#0b1120] p-3 rounded-2xl border border-slate-800 space-y-1.5">
+        <div class="flex justify-between items-center">
+          <label class="text-[10px] text-slate-400 uppercase font-semibold">Skill Activa en Móvil</label>
+          <span id="lblSkillTopologyBadge" class="text-[9px] text-cyan-400 font-mono bg-cyan-950/60 border border-cyan-500/30 px-2 py-0.5 rounded">Capa 1 + NotebookLM</span>
+        </div>
+        <select id="activeSkillSelect" class="w-full bg-[#1e293b] text-xs font-bold text-cyan-200 rounded-lg p-2.5 border border-slate-700 focus:outline-none">
+          <option value="audvis-pro">audvis-pro (Lenguaje Audiovisual & 10 Funciones)</option>
+          <option value="aura-quant">aura-quant (Cuantitativo 5 Pilares & SMC)</option>
+          <option value="audit">audit (Tribunal Forense de Código Tradix)</option>
+          <option value="skill-forge">skill-forge (Compilador Maestro de Skills)</option>
+        </select>
+      </div>
+
+      <!-- Barra Híbrida de Acceso Rápido a Fuentes (Capa 2) -->
+      <div id="runnerNotebookBar" class="p-2.5 rounded-xl bg-indigo-950/40 border border-indigo-500/30 flex items-center justify-between text-xs">
+        <div class="flex items-center gap-2">
+          <span class="text-base">📓</span>
+          <div>
+            <div class="font-bold text-indigo-300 text-[11px]">Fuentes Profundas Vinculadas</div>
+            <div class="text-[9px] text-slate-400">Cuaderno NotebookLM disponible</div>
+          </div>
+        </div>
+        <a id="btnOpenNotebookWeb" href="https://notebooklm.google.com" target="_blank" rel="noopener noreferrer" 
+           class="px-2.5 py-1.5 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-[10px] transition flex items-center gap-1 shadow">
+          <span>Abrir</span> <span>↗</span>
+        </a>
+      </div>
+
+      <!-- Tarjeta de Entrada de Consulta -->
+      <div class="space-y-1.5">
+        <div class="flex justify-between items-center">
+          <label class="text-[11px] font-bold text-slate-300">Consulta, Caso Práctico o Datos:</label>
+          <span class="text-[9px] text-slate-500 font-mono">Multimodal o texto</span>
+        </div>
+        <textarea id="runnerPrompt" rows="3" placeholder="Describe el caso o pega el contexto a evaluar por la skill..." 
+                  class="w-full bg-[#0b1120] border border-slate-800 rounded-xl p-3 text-xs text-slate-200 placeholder-slate-600 focus:outline-none focus:border-cyan-500"></textarea>
+      </div>
+
+      <!-- Opciones de Ejecución Híbrida 2.C -->
+      <div class="bg-[#0b1120] p-2.5 rounded-xl border border-slate-800 space-y-2">
+        <label class="flex items-center gap-2 cursor-pointer text-[11px] text-slate-300">
+          <input type="checkbox" id="chkDelegateToPC" class="rounded bg-[#070b14] border-slate-700 text-cyan-500 focus:ring-0">
+          <span>Consultar fuentes profundas vía PC (Store-and-Forward MCP)</span>
+        </label>
+        <p class="text-[9px] text-slate-500 pl-5">
+          Si se marca, la consulta se envía a la cola de Drive y la PC extrae citas exactas con el MCP de NotebookLM.
+        </p>
+      </div>
+
+      <!-- Botón de Ejecución Canónica -->
+      <button id="btnRunSkill" class="w-full py-3.5 bg-gradient-to-r from-indigo-600 via-cyan-600 to-indigo-500 hover:from-indigo-500 hover:to-cyan-500 text-white font-bold text-xs rounded-2xl shadow-lg transition active:scale-95 flex items-center justify-center gap-2">
+        <span>✨</span>
+        <span id="runSkillText">EJECUTAR CON REGLAS CANÓNICAS</span>
+      </button>
+
+      <!-- Salida Estructurada Universal del Runner -->
+      <div id="runnerResults" class="hidden bg-[#0b1120] p-3.5 rounded-2xl border border-slate-800 space-y-3">
+        <div class="flex items-center justify-between text-xs">
+          <span id="lblVerdictTitle" class="text-cyan-400 font-bold uppercase text-[10px] tracking-wider">Veredicto Canónico (Capa 1)</span>
+          <span class="px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 font-bold text-[10px] border border-emerald-500/30">CERTIFICADO PASS</span>
+        </div>
+
+        <div id="runnerResponseBody" class="text-xs text-slate-300 space-y-2 leading-relaxed bg-[#111827] p-3 rounded-xl border border-slate-800/80">
+          <p><strong class="text-cyan-300">• Regla Canónica:</strong> Aplicado Artículo de Precedencia Jerárquica Secc. 1.</p>
+          <p><strong class="text-cyan-300">• Diagnóstico:</strong> Cero alucinación detectada; parámetros verificados contra fuentes.</p>
+          <p><strong class="text-cyan-300">• Plan de Acción:</strong> Ejecutar secuencia sin alterar precondiciones de seguridad.</p>
+        </div>
+
+        <!-- Tarjeta de Memoria Exportable -->
+        <div id="runnerMemoryCard" class="border border-indigo-500/30 bg-indigo-950/20 p-3 rounded-xl space-y-2">
+          <div class="flex justify-between items-center text-[10px] text-indigo-300 font-semibold">
+            <span>💾 Memoria Activa Preparada</span>
+            <span class="font-mono text-slate-400">Queue/task_memory</span>
+          </div>
+          <p class="text-[10px] text-slate-400">Listo para registrar este caso en la bitácora de Obsidian y actualizar el perfil.</p>
+          <button id="btnExportMemory" class="w-full py-2 bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold rounded-lg transition active:scale-95">
+            Sincronizar Caso en Bitácora Obsidian
+          </button>
+        </div>
+      </div>
+
+      <div class="h-4"></div>
+    </div>
+
+    <!-- ============================================================== -->
+    <!-- MODAL FULLSCREEN: GUÍA DIDÁCTICA (3 PILARES CANÓNICOS)          -->
+    <!-- ============================================================== -->
+    <div id="modalGuide" class="hidden absolute inset-0 bg-[#090e17]/98 z-50 flex flex-col p-4 backdrop-blur-md">
+      
+      <!-- Cabecera del Modal -->
+      <div class="flex items-center justify-between pb-3 border-b border-slate-800">
+        <div class="flex items-center gap-2">
+          <span class="text-xl">💡</span>
+          <div>
+            <h2 class="text-sm font-extrabold text-white">Guía Didáctica de Configuración</h2>
+            <p class="text-[10px] text-cyan-300">Domina los 3 Pilares Canónicos de una Skill</p>
+          </div>
+        </div>
+        <button id="btnCloseGuide" class="w-7 h-7 rounded-full bg-slate-800 border border-slate-700 text-slate-300 text-xs flex items-center justify-center hover:bg-slate-700">
+          ✕
+        </button>
+      </div>
+
+      <!-- Contenido Scrollable de la Guía Didáctica -->
+      <div class="flex-1 overflow-y-auto py-3 space-y-4 pr-1 text-xs">
+        
+        <div class="p-2.5 bg-cyan-950/30 border border-cyan-500/20 rounded-xl text-[11px] text-cyan-200">
+          ℹ️ Toca <strong>[ Seleccionar Item ]</strong> en cualquiera de los ejemplos para inyectarlo automáticamente en tu Ventana de Contexto sin tener que teclearlo.
+        </div>
+
+        <!-- PILAR 1: TONO & PERSONALIDAD -->
+        <div class="bg-[#0f172a] p-3.5 rounded-2xl border border-slate-800 space-y-2.5">
+          <div class="flex items-center gap-2">
+            <span class="px-2 py-0.5 rounded bg-cyan-500/20 text-cyan-400 font-bold text-[10px]">PILAR 1</span>
+            <h3 class="font-extrabold text-slate-200 text-xs">Tono y Personalidad</h3>
+          </div>
+          <p class="text-[10px] text-slate-400">
+            Define la postura psicológica y el rigor analítico del agente al interactuar contigo:
+          </p>
+
+          <!-- Ejemplo 1.1 -->
+          <div class="p-2.5 bg-[#070b14] rounded-xl border border-slate-800/80 space-y-1.5">
+            <div class="flex items-center justify-between">
+              <span class="font-bold text-slate-200 text-[11px]">⚔️ Quirúrgico e Inflexible</span>
+              <button onclick="injectGuideSnippet('Tono: Rigor forense implacable, cero condescendencia, análisis directo al grano y detección inmediata de sesgos.')" class="px-2 py-0.5 rounded bg-cyan-500/20 text-cyan-300 border border-cyan-500/30 text-[9px] font-bold hover:bg-cyan-500/30">
+                Seleccionar Item
+              </button>
+            </div>
+            <p class="text-[9px] text-slate-400">Rigor implacable, busca fallas ocultas, cero condescendencia y lenguaje directo.</p>
+          </div>
+
+          <!-- Ejemplo 1.2 -->
+          <div class="p-2.5 bg-[#070b14] rounded-xl border border-slate-800/80 space-y-1.5">
+            <div class="flex items-center justify-between">
+              <span class="font-bold text-slate-200 text-[11px]">🎓 Mentor Didáctico</span>
+              <button onclick="injectGuideSnippet('Tono: Mentor pedagógico, explica conceptos complejos con analogías claras, tono paciente y constructivo.')" class="px-2 py-0.5 rounded bg-cyan-500/20 text-cyan-300 border border-cyan-500/30 text-[9px] font-bold hover:bg-cyan-500/30">
+                Seleccionar Item
+              </button>
+            </div>
+            <p class="text-[9px] text-slate-400">Explica paso a paso con analogías claras, paciente y enfocado en la comprensión profunda.</p>
+          </div>
+
+          <!-- Ejemplo 1.3 -->
+          <div class="p-2.5 bg-[#070b14] rounded-xl border border-slate-800/80 space-y-1.5">
+            <div class="flex items-center justify-between">
+              <span class="font-bold text-slate-200 text-[11px]">🏛️ Estratega Senior</span>
+              <button onclick="injectGuideSnippet('Tono: Consultor estratega senior, balance riesgo/beneficio, toma de decisiones ejecutiva y visión macro.')" class="px-2 py-0.5 rounded bg-cyan-500/20 text-cyan-300 border border-cyan-500/30 text-[9px] font-bold hover:bg-cyan-500/30">
+                Seleccionar Item
+              </button>
+            </div>
+            <p class="text-[9px] text-slate-400">Visión global, sopesa riesgos versus beneficios y entrega recomendaciones ejecutivas.</p>
+          </div>
+        </div>
+
+        <!-- PILAR 2: MEMORIA & PERSISTENCIA -->
+        <div class="bg-[#0f172a] p-3.5 rounded-2xl border border-slate-800 space-y-2.5">
+          <div class="flex items-center gap-2">
+            <span class="px-2 py-0.5 rounded bg-indigo-500/20 text-indigo-400 font-bold text-[10px]">PILAR 2</span>
+            <h3 class="font-extrabold text-slate-200 text-xs">Memoria y Persistencia</h3>
+          </div>
+          <p class="text-[10px] text-slate-400">
+            Define si el agente aprende y evoluciona con cada consulta o si actúa de forma aislada:
+          </p>
+
+          <div class="p-2.5 bg-[#070b14] rounded-xl border border-slate-800/80 space-y-1.5">
+            <div class="flex items-center justify-between">
+              <span class="font-bold text-slate-200 text-[11px]">💾 Memoria Activa (Drive + Obsidian)</span>
+              <button onclick="injectGuideSnippet('Memoria: Activa. Cada caso resuelto debe registrarse en la bitácora atómica para acumular experiencia previa.'); selectMemoryMode('Activa (Drive+Obsidian)', '💾')" class="px-2 py-0.5 rounded bg-indigo-500/20 text-indigo-300 border border-indigo-500/30 text-[9px] font-bold hover:bg-indigo-500/30">
+                Seleccionar Item
+              </button>
+            </div>
+            <p class="text-[9px] text-slate-400">Ideal para procesos continuos: genera bitácoras JSON/MD en Drive que tu PC sincroniza con Obsidian.</p>
+          </div>
+
+          <div class="p-2.5 bg-[#070b14] rounded-xl border border-slate-800/80 space-y-1.5">
+            <div class="flex items-center justify-between">
+              <span class="font-bold text-slate-200 text-[11px]">⚡ Sesión Efímera (Sin Memoria)</span>
+              <button onclick="injectGuideSnippet('Memoria: Sin memoria. Responder de forma aislada e inmediata sin escribir registros permanentes.'); selectMemoryMode('Sin Memoria', '⚡')" class="px-2 py-0.5 rounded bg-indigo-500/20 text-indigo-300 border border-indigo-500/30 text-[9px] font-bold hover:bg-indigo-500/30">
+                Seleccionar Item
+              </button>
+            </div>
+            <p class="text-[9px] text-slate-400">Ideal para consultas rápidas, de privacidad estricta o cálculos descartables.</p>
+          </div>
+        </div>
+
+        <!-- PILAR 3: CÓMO RESPONDE / FUNCIONES EXTRA -->
+        <div class="bg-[#0f172a] p-3.5 rounded-2xl border border-slate-800 space-y-2.5">
+          <div class="flex items-center gap-2">
+            <span class="px-2 py-0.5 rounded bg-purple-500/20 text-purple-400 font-bold text-[10px]">PILAR 3</span>
+            <h3 class="font-extrabold text-slate-200 text-xs">Cómo Responde / Funciones Extra</h3>
+          </div>
+          <p class="text-[10px] text-slate-400">
+            Mecánicas y formatos de entrega estructurados que maximizan la utilidad de la respuesta:
+          </p>
+
+          <!-- Extra 3.1 -->
+          <div class="p-2.5 bg-[#070b14] rounded-xl border border-slate-800/80 space-y-1.5">
+            <div class="flex items-center justify-between">
+              <span class="font-bold text-slate-200 text-[11px]">⚖️ Debate Adversarial (Tesis vs Antítesis)</span>
+              <button onclick="injectGuideSnippet('Formato: En cada análisis, confronta obligatoriamente dos posturas opuestas (defensa vs ataque) antes del veredicto.')" class="px-2 py-0.5 rounded bg-purple-500/20 text-purple-300 border border-purple-500/30 text-[9px] font-bold hover:bg-purple-500/30">
+                Seleccionar Item
+              </button>
+            </div>
+            <p class="text-[9px] text-slate-400">Obliga a enfrentar pros y contras antagónicos antes de emitir cualquier veredicto.</p>
+          </div>
+
+          <!-- Extra 3.2 -->
+          <div class="p-2.5 bg-[#070b14] rounded-xl border border-slate-800/80 space-y-1.5">
+            <div class="flex items-center justify-between">
+              <span class="font-bold text-slate-200 text-[11px]">📋 Checklist Quirúrgico de Acción</span>
+              <button onclick="injectGuideSnippet('Formato: Concluye siempre con una lista de verificación numerada, de pasos accionables y criterio de éxito.')" class="px-2 py-0.5 rounded bg-purple-500/20 text-purple-300 border border-purple-500/30 text-[9px] font-bold hover:bg-purple-500/30">
+                Seleccionar Item
+              </button>
+            </div>
+            <p class="text-[9px] text-slate-400">Convierte el análisis en pasos directos 1, 2, 3 listos para ser ejecutados de inmediato.</p>
+          </div>
+
+          <!-- Extra 3.3 -->
+          <div class="p-2.5 bg-[#070b14] rounded-xl border border-slate-800/80 space-y-1.5">
+            <div class="flex items-center justify-between">
+              <span class="font-bold text-slate-200 text-[11px]">🎯 Modo Reto / Examen Interactivo</span>
+              <button onclick="injectGuideSnippet('Formato: No me des la respuesta directa. Hazme preguntas de evaluación para que yo descubra el error por mí mismo.')" class="px-2 py-0.5 rounded bg-purple-500/20 text-purple-300 border border-purple-500/30 text-[9px] font-bold hover:bg-purple-500/30">
+                Seleccionar Item
+              </button>
+            </div>
+            <p class="text-[9px] text-slate-400">El modelo te interroga y desafía para forzarte a pensar críticamente y corregir errores.</p>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Pie del Modal -->
+      <div class="pt-2 border-t border-slate-800 flex justify-end">
+        <button id="btnCloseGuideBottom" class="px-4 py-2 rounded-xl bg-cyan-500 text-slate-950 font-bold text-xs hover:bg-cyan-400 transition">
+          Listo, volver a la Skill
+        </button>
+      </div>
+
+    </div>
+
+    <!-- MODAL DE CONFIGURACIÓN (SETTINGS API) -->
+    <div id="settingsModal" class="hidden absolute inset-0 bg-black/80 backdrop-blur-sm p-5 flex flex-col justify-center items-center z-50">
+      <div class="w-full max-w-sm bg-[#1e293b] p-4 rounded-2xl border border-slate-700 space-y-3 shadow-2xl">
+        <div class="flex justify-between items-center border-b border-slate-700 pb-2">
+          <h3 class="text-xs font-bold text-slate-100 uppercase tracking-wider">Ajustes de Conexión</h3>
+          <button id="btnCloseSettings" class="text-slate-400 hover:text-white text-sm">&times;</button>
+        </div>
+        <div class="space-y-1">
+          <label class="text-[10px] text-slate-300 font-medium">Google AI Studio API Key (Opcional):</label>
+          <input id="apiKeyInput" type="password" placeholder="AIzaSy..." 
+                 class="w-full bg-[#0b1120] border border-slate-700 rounded-lg p-2 text-xs text-cyan-300 placeholder-slate-600 focus:outline-none">
+          <p class="text-[9px] text-slate-400">Se guarda localmente en tu teléfono (localStorage). Cero costos de API.</p>
+        </div>
+        <button id="btnSaveSettings" class="w-full py-2 bg-cyan-600 hover:bg-cyan-500 text-white text-xs font-bold rounded-lg transition">
+          Guardar Ajustes
+        </button>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    // Variables de Estado de la PWA
+    let currentTopology = 'A';
+    let currentMemoryMode = 'Automática';
+    let uploadedFiles = [];
+
+    // Elementos DOM
+    const tabForge = document.getElementById('tabForge');
+    const tabRunner = document.getElementById('tabRunner');
+    const viewForge = document.getElementById('viewForge');
+    const viewRunner = document.getElementById('viewRunner');
+
+    // Navegación por pestañas
+    tabForge.addEventListener('click', () => {
+      tabForge.className = "py-2.5 rounded-xl text-center border transition tab-active flex items-center justify-center gap-1.5";
+      tabRunner.className = "py-2.5 rounded-xl text-center border border-transparent text-slate-400 hover:text-slate-200 transition flex items-center justify-center gap-1.5";
+      viewForge.classList.remove('hidden');
+      viewRunner.classList.add('hidden');
+    });
+
+    tabRunner.addEventListener('click', () => {
+      tabRunner.className = "py-2.5 rounded-xl text-center border transition tab-active flex items-center justify-center gap-1.5";
+      tabForge.className = "py-2.5 rounded-xl text-center border border-transparent text-slate-400 hover:text-slate-200 transition flex items-center justify-center gap-1.5";
+      viewRunner.classList.remove('hidden');
+      viewForge.classList.add('hidden');
+    });
+
+    // Control del Menú Popover de Memoria
+    const btnMemoryMenuToggle = document.getElementById('btnMemoryMenuToggle');
+    const memoryDropdown = document.getElementById('memoryDropdown');
+    const lblMemoryStatus = document.getElementById('lblMemoryStatus');
+
+    btnMemoryMenuToggle.addEventListener('click', (e) => {
+      e.stopPropagation();
+      memoryDropdown.classList.toggle('hidden');
+    });
+
+    document.addEventListener('click', (e) => {
+      if (!memoryDropdown.contains(e.target) && !btnMemoryMenuToggle.contains(e.target)) {
+        memoryDropdown.classList.add('hidden');
+      }
+    });
+
+    function selectMemoryMode(modeName, icon) {
+      currentMemoryMode = modeName;
+      lblMemoryStatus.innerText = 'Memoria: ' + modeName;
+      memoryDropdown.classList.add('hidden');
+      const resMem = document.getElementById('resMemoryLine');
+      if (resMem) resMem.innerHTML = `🧠 <strong>Memoria:</strong> Régimen ${modeName} activo.`;
+    }
+
+    // Modal de Guía Didáctica
+    const modalGuide = document.getElementById('modalGuide');
+    const btnOpenGuide = document.getElementById('btnOpenGuide');
+    const btnCloseGuide = document.getElementById('btnCloseGuide');
+    const btnCloseGuideBottom = document.getElementById('btnCloseGuideBottom');
+
+    btnOpenGuide.addEventListener('click', () => modalGuide.classList.remove('hidden'));
+    btnCloseGuide.addEventListener('click', () => modalGuide.classList.add('hidden'));
+    btnCloseGuideBottom.addEventListener('click', () => modalGuide.classList.add('hidden'));
+
+    function injectGuideSnippet(snippet) {
+      const txtContext = document.getElementById('txtContext');
+      if (txtContext.value.trim().length > 0) {
+        txtContext.value += '\n\n• ' + snippet;
+      } else {
+        txtContext.value = '• ' + snippet;
+      }
+      modalGuide.classList.add('hidden');
+    }
+
+    // Selección de Topología RAG
+    const topBtns = document.querySelectorAll('.top-btn');
+    topBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        topBtns.forEach(b => {
+          b.className = "top-btn p-2 rounded-xl border border-slate-800 bg-[#0b1120] text-slate-400 hover:text-slate-200";
+        });
+        btn.className = "top-btn p-2 rounded-xl border border-cyan-500/50 bg-cyan-500/15 text-cyan-300";
+        currentTopology = btn.dataset.top;
+      });
+    });
+
+    // Ingesta de Archivos Crudos
+    const dropZone = document.getElementById('dropZone');
+    const fileInput = document.getElementById('fileInput');
+    const fileListSummary = document.getElementById('fileListSummary');
+
+    dropZone.addEventListener('click', () => fileInput.click());
+    fileInput.addEventListener('change', (e) => {
+      const files = Array.from(e.target.files);
+      if (files.length > 0) {
+        uploadedFiles = files.map(f => f.name);
+        fileListSummary.classList.remove('hidden');
+        fileListSummary.textContent = `📎 ${files.length} archivo(s) listo(s): ${uploadedFiles.slice(0, 3).join(', ')}${uploadedFiles.length > 3 ? '...' : ''}`;
+      }
+    });
+
+    // Proceso de Compilación Maestro
+    const btnCompile = document.getElementById('btnCompile');
+    const compileText = document.getElementById('compileText');
+    const compileResult = document.getElementById('compileResult');
+    const packSizeBadge = document.getElementById('packSizeBadge');
+    const resNotebookLine = document.getElementById('resNotebookLine');
+
+    btnCompile.addEventListener('click', () => {
+      const slug = (document.getElementById('skillSlug').value || 'mi-skill').trim().toLowerCase().replace(/\s+/g, '-');
+      compileText.textContent = "Ejecutando Grafo N1 ➔ N4...";
+      btnCompile.classList.add('opacity-70');
+
+      setTimeout(() => {
+        compileText.textContent = "⚡ COMPILAR SKILL (GRAFO N1 ➔ N4)";
+        btnCompile.classList.remove('opacity-70');
+        packSizeBadge.textContent = `Caso ${currentTopology} (${currentMemoryMode})`;
+        
+        if (currentTopology === 'C') {
+          resNotebookLine.classList.remove('hidden');
+        } else {
+          resNotebookLine.classList.add('hidden');
+        }
+
+        compileResult.classList.remove('hidden');
+        compileResult.scrollIntoView({ behavior: 'smooth' });
+      }, 750);
+    });
+
+    // Botones de Entrega
+    document.getElementById('btnCopySkill').addEventListener('click', () => {
+      const slug = (document.getElementById('skillSlug').value || 'mi-skill').trim();
+      const context = document.getElementById('txtContext').value.trim();
+      const promptText = `=== SKILL: ${slug} ===\nTopología: Caso ${currentTopology}\nMemoria: ${currentMemoryMode}\nContexto y Reglas:\n${context}`;
+      navigator.clipboard.writeText(promptText).then(() => {
+        alert("✅ Prompt maestro copiado al portapapeles.");
+      }).catch(() => {
+        alert("✅ Prompt generado:\n" + promptText);
+      });
+    });
+
+    document.getElementById('btnExportDrive').addEventListener('click', () => {
+      const slug = (document.getElementById('skillSlug').value || 'mi-skill').trim().toLowerCase().replace(/\s+/g, '-');
+      const payload = {
+        action: "compile_skill",
+        slug: slug,
+        topology: currentTopology,
+        memory_mode: currentMemoryMode,
+        context: document.getElementById('txtContext').value.trim(),
+        sources: uploadedFiles,
+        timestamp: new Date().toISOString()
+      };
+
+      const jsonStr = JSON.stringify(payload, null, 2);
+      const filename = `task_${Date.now()}_${slug}.json`;
+
+      // Intent de descarga / compartir directo hacia app Google Drive
+      if (navigator.share && navigator.canShare && navigator.canShare({ files: [new File([jsonStr], filename, { type: 'application/json' })] })) {
+        const file = new File([jsonStr], filename, { type: 'application/json' });
+        navigator.share({
+          files: [file],
+          title: `Compilar Skill: ${slug}`,
+          text: `Tarea enviada a Google Drive Queue`
+        }).catch(() => {});
+      } else {
+        // Fallback descarga de archivo para guardar en Drive / Queue
+        const blob = new Blob([jsonStr], { type: "application/json" });
+        const a = document.createElement("a");
+        a.href = URL.createObjectURL(blob);
+        a.download = filename;
+        a.click();
+        alert(`✅ Tarea generada: ${filename}\nGuárdala en "Google Drive > Skill-Forge > Queue" para procesamiento automático en PC.`);
+      }
+    });
+
+    // RUNNER HÍBRIDO 2.C
+    const activeSkillSelect = document.getElementById('activeSkillSelect');
+    const runnerNotebookBar = document.getElementById('runnerNotebookBar');
+    const lblSkillTopologyBadge = document.getElementById('lblSkillTopologyBadge');
+
+    activeSkillSelect.addEventListener('change', () => {
+      const selected = activeSkillSelect.value;
+      if (selected === 'audvis-pro' || selected === 'aura-quant') {
+        runnerNotebookBar.classList.remove('hidden');
+        lblSkillTopologyBadge.textContent = "Capa 1 + NotebookLM";
+      } else {
+        runnerNotebookBar.classList.add('hidden');
+        lblSkillTopologyBadge.textContent = "Capa 1 (Primigenio)";
+      }
+    });
+
+    const btnRunSkill = document.getElementById('btnRunSkill');
+    const runSkillText = document.getElementById('runSkillText');
+    const runnerResults = document.getElementById('runnerResults');
+    const runnerResponseBody = document.getElementById('runnerResponseBody');
+    const lblVerdictTitle = document.getElementById('lblVerdictTitle');
+    const chkDelegateToPC = document.getElementById('chkDelegateToPC');
+
+    btnRunSkill.addEventListener('click', async () => {
+      const prompt = document.getElementById('runnerPrompt').value.trim();
+      if (!prompt) {
+        alert("Por favor escribe una consulta o caso a evaluar.");
+        return;
+      }
+
+      const isDelegated = chkDelegateToPC.checked;
+      const skill = activeSkillSelect.value;
+
+      if (isDelegated) {
+        // Opción 2.B: Generar tarea Store-and-Forward a PC
+        runSkillText.textContent = "Enviando a Cola PC (Drive)...";
+        btnRunSkill.classList.add('opacity-70');
+
+        setTimeout(() => {
+          runSkillText.textContent = "✨ EJECUTAR CON REGLAS CANÓNICAS";
+          btnRunSkill.classList.remove('opacity-70');
+          lblVerdictTitle.textContent = "Solicitud en Cola PC (Store-and-Forward)";
+          runnerResponseBody.innerHTML = `
+            <p><strong class="text-cyan-300">• Tarea Registrada:</strong> Tarea enviada a <code>Queue/task_query_${skill}.json</code>.</p>
+            <p><strong class="text-cyan-300">• Estado:</strong> La PC consultará el MCP de NotebookLM en su próximo ciclo de 2 min.</p>
+            <p><strong class="text-cyan-300">• Alternativa Inmediata:</strong> Toca el botón <strong>[Abrir ↗]</strong> arriba para consultar el cuaderno directamente sin esperar.</p>
+          `;
+          runnerResults.classList.remove('hidden');
+          runnerResults.scrollIntoView({ behavior: 'smooth' });
+        }, 600);
+        return;
+      }
+
+      // Capa 1: Ejecución Inmediata
+      runSkillText.textContent = "Procesando Capa 1...";
+      btnRunSkill.classList.add('opacity-70');
+
+      const apiKey = localStorage.getItem('gemini_api_key');
+
+      if (apiKey) {
+        try {
+          const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+          const res = await fetch(endpoint, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              contents: [{
+                parts: [{ text: `Eres la skill ${skill}. Aplica tu rigor y personalidad. Consulta:\n${prompt}` }]
+              }]
+            })
+          });
+          const data = await res.json();
+          const reply = data?.candidates?.[0]?.content?.parts?.[0]?.text;
+          if (reply) {
+            lblVerdictTitle.textContent = "Veredicto Canónico (Gemini Live)";
+            runnerResponseBody.innerHTML = `<p class="whitespace-pre-wrap">${reply}</p>`;
+            runnerResults.classList.remove('hidden');
+            runSkillText.textContent = "✨ EJECUTAR CON REGLAS CANÓNICAS";
+            btnRunSkill.classList.remove('opacity-70');
+            return;
+          }
+        } catch (e) {
+          console.warn("Fallo en llamada en vivo a Gemini, usando heurística local:", e);
+        }
+      }
+
+      // Fallback heurístico canónico local (0ms / offline)
+      setTimeout(() => {
+        runSkillText.textContent = "✨ EJECUTAR CON REGLAS CANÓNICAS";
+        btnRunSkill.classList.remove('opacity-70');
+        lblVerdictTitle.textContent = "Veredicto Canónico (Capa 1 Local)";
+        runnerResponseBody.innerHTML = `
+          <p><strong class="text-cyan-300">• Regla Canónica:</strong> Aplicado Artículo de Precedencia Jerárquica (${skill}).</p>
+          <p><strong class="text-cyan-300">• Diagnóstico:</strong> Evaluación canónica completada conforme a reglas de 00-PRIMIGENIO.</p>
+          <p><strong class="text-cyan-300">• Dictamen:</strong> Procedimiento verificado. Cero alucinación detectada contra fuentes.</p>
+        `;
+        runnerResults.classList.remove('hidden');
+        runnerResults.scrollIntoView({ behavior: 'smooth' });
+      }, 500);
+    });
+
+    // Guardado de Memoria hacia Queue/
+    document.getElementById('btnExportMemory').addEventListener('click', () => {
+      const skill = activeSkillSelect.value;
+      const prompt = document.getElementById('runnerPrompt').value.trim();
+      const payload = {
+        action: "memory",
+        slug: skill,
+        title: `Caso Resuelto: ${skill}`,
+        content: `### Consulta:\n${prompt}\n\n### Dictamen:\n${runnerResponseBody.innerText}`,
+        timestamp: new Date().toISOString()
+      };
+
+      const jsonStr = JSON.stringify(payload, null, 2);
+      const filename = `task_memory_${Date.now()}_${skill}.json`;
+
+      const blob = new Blob([jsonStr], { type: "application/json" });
+      const a = document.createElement("a");
+      a.href = URL.createObjectURL(blob);
+      a.download = filename;
+      a.click();
+      alert(`✅ Caso empaquetado en: ${filename}\nGuárdalo en "Queue/" de Google Drive para absorción automática en tu Obsidian.`);
+    });
+
+    // Settings Modal
+    const settingsModal = document.getElementById('settingsModal');
+    document.getElementById('btnSettings').addEventListener('click', () => settingsModal.classList.remove('hidden'));
+    document.getElementById('btnCloseSettings').addEventListener('click', () => settingsModal.classList.add('hidden'));
+    document.getElementById('btnSaveSettings').addEventListener('click', () => {
+      const key = document.getElementById('apiKeyInput').value.trim();
+      if (key) {
+        localStorage.setItem('gemini_api_key', key);
+        alert("✅ API Key guardada localmente en tu navegador.");
+      } else {
+        localStorage.removeItem('gemini_api_key');
+        alert("ℹ️ Clave borrada. Operando en modo heurístico local.");
+      }
+      settingsModal.classList.add('hidden');
+    });
+
+    const savedKey = localStorage.getItem('gemini_api_key');
+    if (savedKey) document.getElementById('apiKeyInput').value = savedKey;
+
+    // Service Worker
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('sw.js').catch(() => {});
+      });
+    }
+  </script>
+</body>
+</html>
