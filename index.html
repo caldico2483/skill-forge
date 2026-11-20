@@ -8,6 +8,8 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <title>SKILL FORGE Studio V 1.0</title>
   <link rel="manifest" href="manifest.json">
+  <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
+  <link rel="apple-touch-icon" href="icon-192.png">
   <script src="https://www.gstatic.com/antigravity/web/dev/tailwindcss.min.js"></script>
   <style>
     body {
@@ -134,8 +136,8 @@
                class="w-full bg-[#0b1120] border border-slate-800 rounded-xl px-3 py-2.5 text-xs text-cyan-300 placeholder-slate-600 focus:outline-none focus:border-cyan-500 font-mono">
       </div>
 
-      <!-- INGESTA DE FUENTES CRUDAS (AMPLIA Y CON PRESENCIA ICONOGRÁFICA) -->
-      <div class="border-2 border-dashed border-cyan-500/40 hover:border-cyan-400 rounded-2xl p-4 bg-gradient-to-b from-[#0b1120] to-[#0f172a] text-center transition cursor-pointer" id="dropZone">
+      <!-- INGESTA DE FUENTES CRUDAS (SELECTOR NATIVO + DRIVE DIRECTO) -->
+      <div class="border-2 border-dashed border-cyan-500/40 hover:border-cyan-400 rounded-2xl p-4 bg-gradient-to-b from-[#0b1120] to-[#0f172a] text-center transition" id="dropZone">
         <div class="flex justify-center items-center gap-2 mb-2 text-xl">
           <span class="p-2 rounded-xl bg-cyan-950/80 border border-cyan-500/30">📄</span>
           <span class="p-2 rounded-xl bg-indigo-950/80 border border-indigo-500/30">📚</span>
@@ -143,29 +145,69 @@
           <span class="p-2 rounded-xl bg-slate-800 border border-slate-700">🎙️</span>
         </div>
         <p class="text-xs font-bold text-slate-200">Ingesta de Fuentes Crudas</p>
-        <p class="text-[10px] text-slate-400 mt-0.5">Arrastra o pulsa para subir PDFs, apuntes, capturas o audios</p>
-        <div class="mt-2.5 inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-cyan-500/10 border border-cyan-500/30 text-[10px] font-semibold text-cyan-300">
-          <span>📂 Explorar Archivos Locales</span>
+        <p class="text-[10px] text-slate-400 mt-0.5">Elige cómo proveer los documentos y libros a la skill:</p>
+        
+        <!-- Dos Opciones Efectivas de Acceso a Archivos -->
+        <div class="mt-3 grid grid-cols-1 gap-2 text-left">
+          
+          <!-- Opción 1: Selector de Archivos del Sistema / Teléfono -->
+          <button type="button" id="btnSelectFiles" class="p-2.5 rounded-xl bg-cyan-950/60 hover:bg-cyan-900/60 border border-cyan-500/40 flex items-center justify-between transition">
+            <div class="flex items-center gap-2">
+              <span class="text-base">📂</span>
+              <div>
+                <div class="text-[11px] font-bold text-cyan-300">Explorar Gestor de Archivos (Poco F3 / Drive)</div>
+                <div class="text-[9px] text-slate-400">Abre el explorador de documentos, PDFs, libros o audios</div>
+              </div>
+            </div>
+            <span class="text-xs text-cyan-400">➔</span>
+          </button>
+          
+          <!-- Opción 2: Fuentes ya depositadas en Google Drive -->
+          <label class="p-2.5 rounded-xl bg-[#070b14] border border-indigo-500/30 flex items-start gap-2.5 cursor-pointer hover:border-indigo-500/50 transition">
+            <input type="checkbox" id="chkUseDriveFolder" class="mt-0.5 rounded bg-slate-900 border-slate-700 text-indigo-500 focus:ring-0">
+            <div>
+              <div class="text-[11px] font-bold text-indigo-300 flex items-center gap-1">
+                <span>☁️</span> <span>Leer fuentes ya en Google Drive (Sources/&lt;slug&gt;)</span>
+              </div>
+              <div class="text-[9px] text-slate-400 leading-tight mt-0.5">
+                La PC tomará directamente los archivos que tengas o coloques en <code>Skill-Forge > Sources > [slug]</code> sin gastar datos del móvil.
+              </div>
+            </div>
+          </label>
         </div>
-        <input type="file" id="fileInput" class="hidden" multiple>
-        <div id="fileListSummary" class="hidden mt-2 text-[10px] font-mono text-cyan-300 bg-[#070b14] p-1.5 rounded-lg border border-cyan-500/20"></div>
+
+        <input type="file" id="fileInput" class="hidden" multiple accept="*/*,application/pdf,.pdf,.doc,.docx,.txt,.md,.epub,.csv,.zip,audio/*">
+        <div id="fileListSummary" class="hidden mt-2.5 text-[10px] font-mono text-cyan-300 bg-[#070b14] p-2 rounded-lg border border-cyan-500/20 text-left"></div>
       </div>
 
-      <!-- VENTANA DE CONTEXTO (ÁREA LIBRE) CON BOTÓN DE GUÍA DIDÁCTICA -->
+      <!-- VENTANA DE CONTEXTO (ÁREA LIBRE) CON BOTÓN DE GUÍA DIDÁCTICA Y MICRÓFONO -->
       <div class="bg-[#0b1120] p-3.5 rounded-2xl border border-slate-800 space-y-2">
         <div class="flex items-center justify-between">
           <label class="text-[11px] font-bold text-slate-200 flex items-center gap-1.5">
             <span>✍️</span> <span>Ventana de Contexto (Requerimiento)</span>
           </label>
           
-          <!-- Botón de Guía Didáctica que abre el modal Fullscreen -->
-          <button id="btnOpenGuide" type="button" class="flex items-center gap-1 px-2.5 py-1 rounded-lg bg-indigo-950/80 border border-indigo-500/40 text-indigo-300 text-[10px] font-bold hover:bg-indigo-900/80 transition animate-pulse">
-            <span>💡</span> <span>Guía Didáctica</span>
-          </button>
+          <div class="flex items-center gap-1.5">
+            <!-- Botón de Micrófono para Dictado por Voz -->
+            <button id="btnVoiceContext" type="button" class="flex items-center gap-1 px-2.5 py-1 rounded-lg bg-cyan-950/80 border border-cyan-500/40 text-cyan-300 text-[10px] font-bold hover:bg-cyan-900/80 transition" title="Dictar requerimiento por voz">
+              <span>🎙️</span> <span id="lblVoiceContext">Dictar</span>
+            </button>
+
+            <!-- Botón de Guía Didáctica que abre el modal Fullscreen -->
+            <button id="btnOpenGuide" type="button" class="flex items-center gap-1 px-2.5 py-1 rounded-lg bg-indigo-950/80 border border-indigo-500/40 text-indigo-300 text-[10px] font-bold hover:bg-indigo-900/80 transition animate-pulse">
+              <span>💡</span> <span>Guía Didáctica</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Indicador de Grabación Activa -->
+        <div id="pulseContextVoice" class="hidden px-2.5 py-1 rounded-lg bg-red-950/60 border border-red-500/40 text-red-300 text-[10px] flex items-center gap-2 animate-pulse">
+          <span class="w-2 h-2 rounded-full bg-red-500"></span>
+          <span>Escuchando tu voz... Habla con naturalidad (se transcribe abajo)</span>
         </div>
 
         <p class="text-[10px] text-slate-400 leading-tight">
-          Redacta en lenguaje natural lo que esperas de la skill o selecciona estilos preconfigurados desde la guía:
+          Redacta o dicta en lenguaje natural lo que esperas de la skill o selecciona estilos preconfigurados desde la guía:
         </p>
 
         <textarea id="txtContext" rows="4" placeholder="Ej: Quiero que actúes como auditor implacable. En cada análisis debate posturas contrarias y entrégame un checklist quirúrgico..."
@@ -253,11 +295,18 @@
         </a>
       </div>
 
-      <!-- Tarjeta de Entrada de Consulta -->
+      <!-- Tarjeta de Entrada de Consulta con Micrófono -->
       <div class="space-y-1.5">
         <div class="flex justify-between items-center">
           <label class="text-[11px] font-bold text-slate-300">Consulta, Caso Práctico o Datos:</label>
-          <span class="text-[9px] text-slate-500 font-mono">Multimodal o texto</span>
+          <button id="btnVoiceRunner" type="button" class="flex items-center gap-1 px-2 py-0.5 rounded-lg bg-cyan-950/80 border border-cyan-500/40 text-cyan-300 text-[10px] font-bold hover:bg-cyan-900/80 transition" title="Dictar consulta por voz">
+            <span>🎙️</span> <span id="lblVoiceRunner">Dictar</span>
+          </button>
+        </div>
+        <!-- Indicador de Grabación Activa Runner -->
+        <div id="pulseRunnerVoice" class="hidden px-2.5 py-1 rounded-lg bg-red-950/60 border border-red-500/40 text-red-300 text-[10px] flex items-center gap-2 animate-pulse">
+          <span class="w-2 h-2 rounded-full bg-red-500"></span>
+          <span>Escuchando consulta... Di tu caso a evaluar</span>
         </div>
         <textarea id="runnerPrompt" rows="3" placeholder="Describe el caso o pega el contexto a evaluar por la skill..." 
                   class="w-full bg-[#0b1120] border border-slate-800 rounded-xl p-3 text-xs text-slate-200 placeholder-slate-600 focus:outline-none focus:border-cyan-500"></textarea>
@@ -569,20 +618,117 @@
       });
     });
 
-    // Ingesta de Archivos Crudos
-    const dropZone = document.getElementById('dropZone');
+    // Ingesta de Archivos Crudos y Fuentes
+    const btnSelectFiles = document.getElementById('btnSelectFiles');
     const fileInput = document.getElementById('fileInput');
     const fileListSummary = document.getElementById('fileListSummary');
+    const chkUseDriveFolder = document.getElementById('chkUseDriveFolder');
 
-    dropZone.addEventListener('click', () => fileInput.click());
+    btnSelectFiles.addEventListener('click', (e) => {
+      e.stopPropagation();
+      fileInput.click();
+    });
+
     fileInput.addEventListener('change', (e) => {
       const files = Array.from(e.target.files);
       if (files.length > 0) {
         uploadedFiles = files.map(f => f.name);
         fileListSummary.classList.remove('hidden');
-        fileListSummary.textContent = `📎 ${files.length} archivo(s) listo(s): ${uploadedFiles.slice(0, 3).join(', ')}${uploadedFiles.length > 3 ? '...' : ''}`;
+        fileListSummary.textContent = `📎 ${files.length} archivo(s) seleccionado(s): ${uploadedFiles.slice(0, 3).join(', ')}${uploadedFiles.length > 3 ? '...' : ''}`;
       }
     });
+
+    chkUseDriveFolder.addEventListener('change', () => {
+      const slug = (document.getElementById('skillSlug').value || 'mi-skill').trim().toLowerCase().replace(/\s+/g, '-');
+      if (chkUseDriveFolder.checked) {
+        fileListSummary.classList.remove('hidden');
+        fileListSummary.innerHTML = `☁️ <strong>Vinculado a Google Drive:</strong> Se procesarán todas las fuentes en <code>Skill-Forge > Sources > ${slug}</code>`;
+      } else if (uploadedFiles.length === 0) {
+        fileListSummary.classList.add('hidden');
+      }
+    });
+
+    // SISTEMA DE DICTADO POR VOZ EN TIEMPO REAL (Web Speech API)
+    function setupVoiceDictation(btnId, txtId, lblId, pulseId) {
+      const btn = document.getElementById(btnId);
+      const txt = document.getElementById(txtId);
+      const lbl = document.getElementById(lblId);
+      const pulse = pulseId ? document.getElementById(pulseId) : null;
+
+      if (!btn || !txt || !lbl) return;
+
+      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+      if (!SpeechRecognition) {
+        btn.addEventListener('click', () => {
+          alert("Tu navegador no soporta reconocimiento por voz nativo. Puedes usar el icono de micrófono en el teclado de tu teléfono.");
+        });
+        return;
+      }
+
+      const recognition = new SpeechRecognition();
+      recognition.continuous = true;
+      recognition.interimResults = true;
+      recognition.lang = 'es-ES';
+
+      let isListening = false;
+      let finalTranscript = '';
+
+      recognition.onstart = () => {
+        isListening = true;
+        lbl.textContent = "Detener";
+        btn.className = "flex items-center gap-1 px-2.5 py-1 rounded-lg bg-red-950/80 border border-red-500/60 text-red-300 text-[10px] font-bold transition animate-pulse";
+        if (pulse) pulse.classList.remove('hidden');
+      };
+
+      recognition.onend = () => {
+        isListening = false;
+        lbl.textContent = "Dictar";
+        btn.className = "flex items-center gap-1 px-2.5 py-1 rounded-lg bg-cyan-950/80 border border-cyan-500/40 text-cyan-300 text-[10px] font-bold hover:bg-cyan-900/80 transition";
+        if (pulse) pulse.classList.add('hidden');
+      };
+
+      recognition.onerror = (e) => {
+        console.warn("Speech error:", e.error);
+        recognition.stop();
+      };
+
+      recognition.onresult = (event) => {
+        let interimTranscript = '';
+        for (let i = event.resultIndex; i < event.results.length; ++i) {
+          if (event.results[i].isFinal) {
+            finalTranscript += event.results[i][0].transcript + ' ';
+          } else {
+            interimTranscript += event.results[i][0].transcript;
+          }
+        }
+        const textToInsert = (finalTranscript + interimTranscript).trim();
+        if (textToInsert) {
+          const current = txt.value.trim();
+          if (!current.includes(textToInsert)) {
+            txt.value = current ? current + ' ' + textToInsert : textToInsert;
+            txt.scrollTop = txt.scrollHeight;
+          }
+        }
+      };
+
+      btn.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        if (isListening) {
+          recognition.stop();
+        } else {
+          finalTranscript = '';
+          try {
+            recognition.start();
+          } catch(err) {
+            recognition.stop();
+          }
+        }
+      });
+    }
+
+    setupVoiceDictation('btnVoiceContext', 'txtContext', 'lblVoiceContext', 'pulseContextVoice');
+    setupVoiceDictation('btnVoiceRunner', 'runnerPrompt', 'lblVoiceRunner', 'pulseRunnerVoice');
 
     // Proceso de Compilación Maestro
     const btnCompile = document.getElementById('btnCompile');
@@ -626,13 +772,19 @@
 
     document.getElementById('btnExportDrive').addEventListener('click', () => {
       const slug = (document.getElementById('skillSlug').value || 'mi-skill').trim().toLowerCase().replace(/\s+/g, '-');
+      const useDriveFolder = chkUseDriveFolder.checked;
+      const sourcesList = [...uploadedFiles];
+      if (useDriveFolder) {
+        sourcesList.push(`[Google Drive: Sources/${slug}]`);
+      }
       const payload = {
         action: "compile_skill",
         slug: slug,
         topology: currentTopology,
         memory_mode: currentMemoryMode,
         context: document.getElementById('txtContext').value.trim(),
-        sources: uploadedFiles,
+        sources: sourcesList,
+        use_drive_sources: useDriveFolder,
         timestamp: new Date().toISOString()
       };
 
