@@ -1,9 +1,11 @@
 // Service Worker mínimo para PWA instalable offline
-const CACHE_NAME = 'skill-forge-pwa-v1';
+const CACHE_NAME = 'skill-forge-pwa-v3';
 const ASSETS = [
   './',
   './index.html',
-  './manifest.json'
+  './manifest.json',
+  './icon-192.png',
+  './icon-512.png'
 ];
 
 self.addEventListener('install', (event) => {
